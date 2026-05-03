@@ -96,24 +96,24 @@ input, select, textarea, button { font-family: inherit; }
 #main { flex: 1; padding: 20px; min-width: 0; max-width: 1400px; margin: 0 auto; width: 100%; }
 
 /* HERO */
-#heroWrap { position: relative; border-radius: 14px; overflow: hidden; margin-bottom: 24px; background: var(--s2); }
-#heroTrack { display: flex; transition: transform .55s cubic-bezier(.4,0,.2,1); }
-.hslide { min-width: 100%; height: 300px; position: relative; overflow: hidden; flex-shrink: 0; cursor: pointer; }
+#heroWrap { position: relative; border-radius: 14px; overflow: hidden; margin-bottom: 24px; background: #1a2744; height: 300px; }
+#heroTrack { display: flex; height: 100%; transition: transform .55s cubic-bezier(.4,0,.2,1); will-change: transform; }
+.hslide { min-width: 100%; width: 100%; height: 300px; position: relative; overflow: hidden; flex-shrink: 0; cursor: pointer; display: flex; align-items: center; }
 .hslide img.hbg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
-.hoverlay { position: absolute; inset: 0; background: linear-gradient(90deg, rgba(10,20,50,.82) 0%, rgba(10,20,50,.4) 60%, transparent 100%); }
-.hcontent { position: absolute; inset: 0; display: flex; align-items: center; padding: 28px 40px; }
-.htxt { max-width: 480px; }
-.hbadge { display: inline-block; background: var(--ac); color: #fff; font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 4px; margin-bottom: 10px; text-transform: uppercase; letter-spacing: .5px; }
-.htxt h2 { font-size: clamp(18px,3vw,28px); font-weight: 800; margin-bottom: 8px; }
-.htxt p { color: rgba(238,242,255,.7); font-size: 14px; margin-bottom: 16px; }
-.hbtn { background: var(--ac); color: #fff; border: none; padding: 10px 22px; border-radius: 8px; font-weight: 700; font-size: 13px; cursor: pointer; }
-.hbtn:hover { background: var(--ac2); }
-.harr { position: absolute; top: 50%; transform: translateY(-50%); z-index: 5; background: rgba(14,17,25,.7); border: 1px solid rgba(255,255,255,.1); color: #fff; width: 38px; height: 38px; border-radius: 50%; cursor: pointer; font-size: 18px; display: flex; align-items: center; justify-content: center; transition: all .2s; }
-.harr:hover { background: var(--ac); }
-#hprev { left: 10px; } #hnext { right: 10px; }
-#hdots { position: absolute; bottom: 12px; left: 50%; transform: translateX(-50%); display: flex; gap: 5px; z-index: 5; }
-.hdot { width: 7px; height: 7px; border-radius: 50%; background: rgba(255,255,255,.3); cursor: pointer; transition: all .25s; }
-.hdot.on { background: var(--ac); width: 20px; border-radius: 4px; }
+.hoverlay { position: absolute; inset: 0; background: linear-gradient(90deg, rgba(10,20,50,.85) 0%, rgba(10,20,50,.45) 55%, transparent 100%); z-index: 1; }
+.hcontent { position: absolute; inset: 0; display: flex; align-items: center; padding: 28px 44px; z-index: 2; }
+.htxt { max-width: 500px; }
+.hbadge { display: inline-block; background: var(--ac); color: #fff; font-size: 11px; font-weight: 700; padding: 4px 12px; border-radius: 4px; margin-bottom: 12px; text-transform: uppercase; letter-spacing: .5px; }
+.htxt h2 { font-size: clamp(20px,3vw,30px); font-weight: 800; margin-bottom: 8px; color: #fff; text-shadow: 0 2px 8px rgba(0,0,0,.3); }
+.htxt p { color: rgba(255,255,255,.8); font-size: 14px; margin-bottom: 18px; line-height: 1.5; }
+.hbtn { background: var(--ac); color: #fff; border: none; padding: 11px 24px; border-radius: 8px; font-weight: 700; font-size: 14px; cursor: pointer; transition: all .2s; }
+.hbtn:hover { background: var(--ac2); transform: scale(1.03); }
+.harr { position: absolute; top: 50%; transform: translateY(-50%); z-index: 10; background: rgba(0,0,0,.5); border: 1px solid rgba(255,255,255,.2); color: #fff; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; font-size: 20px; display: flex; align-items: center; justify-content: center; transition: all .2s; backdrop-filter: blur(4px); }
+.harr:hover { background: var(--ac); border-color: var(--ac); }
+#hprev { left: 12px; } #hnext { right: 12px; }
+#hdots { position: absolute; bottom: 14px; left: 50%; transform: translateX(-50%); display: flex; gap: 6px; z-index: 10; }
+.hdot { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,.4); cursor: pointer; transition: all .25s; border: none; }
+.hdot.on { background: #fff; width: 22px; border-radius: 4px; }
 
 /* SECTION */
 .sec { margin-bottom: 26px; }
@@ -1063,28 +1063,38 @@ var slideIdx = 0, slideTimer = null;
 function renderHero() {
   var track = document.getElementById('heroTrack');
   var dd = document.getElementById('hdots');
-  if (!slides.length) {
-    track.innerHTML = '<div class="hslide" style="min-width:100%;height:300px;display:flex;align-items:center;justify-content:center;background:var(--s2)"><p style="color:var(--mu)">Ajoutez des slides dans Admin → 🖼 Slideshow</p></div>';
-    dd.innerHTML = ''; return;
+  if (!track) return;
+
+  if (!slides || !slides.length) {
+    track.innerHTML = '<div style="min-width:100%;height:300px;display:flex;align-items:center;justify-content:center;background:#e8edf4;border-radius:14px;"><p style="color:#5a7a9f;font-size:15px;">Ajoutez des slides dans Admin &#8594; &#128444; Slideshow</p></div>';
+    if (dd) dd.innerHTML = '';
+    return;
   }
+
   var th = '';
-  slides.forEach(function(s, i) {
+  for (var i = 0; i < slides.length; i++) {
+    var s = slides[i];
     var bgStyle = s.img ? '' : 'background:' + s.color + ';';
-    var imgTag = s.img ? '<img class="hbg" src="' + s.img + '" alt="' + s.title + '">' : '<div style="position:absolute;inset:0;' + bgStyle + '"></div>';
-    var ov = s.img ? '<div class="hoverlay"></div>' : '';
     th += '<div class="hslide" style="' + bgStyle + '" onclick="handleSlideClick(' + i + ')">';
-    th += imgTag + ov;
-    th += '<div class="hcontent"><div class="htxt">';
+    if (s.img) {
+      th += '<img class="hbg" src="' + s.img + '" alt="' + s.title + '">';
+      th += '<div class="hoverlay"></div>';
+    }
+    th += '<div class="hcontent">';
+    th += '<div class="htxt">';
     if (s.badge) th += '<span class="hbadge">' + s.badge + '</span>';
-    th += '<h2>' + s.title + '</h2>';
+    th += '<h2>' + (s.title || '') + '</h2>';
     if (s.subtitle) th += '<p>' + s.subtitle + '</p>';
-    if (s.btn) th += '<button class="hbtn" onclick="event.stopPropagation();handleSlideClick(' + i + ')">' + s.btn + ' →</button>';
+    if (s.btn) th += '<button class="hbtn" onclick="event.stopPropagation();handleSlideClick(' + i + ')">' + s.btn + ' &rarr;</button>';
     th += '</div></div></div>';
-  });
+  }
   track.innerHTML = th;
+
   var dh = '';
-  slides.forEach(function(_, i) { dh += '<div class="hdot' + (i===0?' on':'') + '" onclick="goSlide(' + i + ')"></div>'; });
-  dd.innerHTML = dh;
+  for (var j = 0; j < slides.length; j++) {
+    dh += '<div class="hdot' + (j === 0 ? ' on' : '') + '" onclick="goSlide(' + j + ')"></div>';
+  }
+  if (dd) dd.innerHTML = dh;
   goSlide(0);
 }
 function handleSlideClick(i) {
